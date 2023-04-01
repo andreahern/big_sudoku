@@ -31,7 +31,7 @@ public class SolutionChecker {
                 seen += (1 << solution[i][j]);
             }
             // If each number is not seen, the solution is invalid
-            if (seen != (1 << n + 1) - 1) return false;
+            if (seen != (1 << n + 1) - 2) return false;
         }
 
         // Check if each column has exactly one instance of each number 1 to n
@@ -43,7 +43,7 @@ public class SolutionChecker {
                 seen += (1 << solution[j][i]);
             }
             // If each number is not seen, the solution is invalid
-            if (seen != (1 << n + 1) - 1) return false;
+            if (seen != (1 << n + 1) - 2) return false;
         }
 
         // Check if each square has exactly one instance of each number 1 to n
@@ -57,7 +57,7 @@ public class SolutionChecker {
                     }
                 }
                 // If each number is not seen, the solution is invalid
-                if (seen != (1 << n + 1) - 1) return false;
+                if (seen != (1 << n + 1) - 2) return false;
             }
         }
 

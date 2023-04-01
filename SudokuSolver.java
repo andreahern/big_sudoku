@@ -10,7 +10,7 @@ import java.util.*;
 
 public class SudokuSolver {
     // If given sudoku board as a file, parse it and turn into array
-    public void solve(String filename) {
+    public static long[] solve(String filename) {
         try {
             File file = new File(filename);
             Scanner scanner = new Scanner(file);
@@ -20,7 +20,7 @@ public class SudokuSolver {
             // If first row is empty, quit
             if (row == null) {
                 System.out.println("File is empty");
-                return;
+                return null;
             }
             String[] rowSplit = row.split(" ");
             int n = rowSplit.length;
@@ -28,7 +28,7 @@ public class SudokuSolver {
             // Quit if n is not a perfect square
             if ((int) Math.sqrt(n) != Math.sqrt(n)) {
                 System.out.println("Sudoku board is invalid");
-                return;
+                return null;
             }
             // Otherwise initialize sqrtn
             int sqrtn = (int) Math.sqrt(n);
@@ -48,19 +48,19 @@ public class SudokuSolver {
                 // If row is empty, quit
                 if (row == null) {
                     System.out.println("Sudoku has too few rows");
-                    return;
+                    return null;
                 }
                 rowSplit = row.split(" ");
 
                 // If column has too few columns, quit
                 if (rowSplit.length < n) {
                     System.out.println("Sudoku has too few columns in one of the rows");
-                    return;
+                    return null;
                 }
                 // If column has too many columns, quit
                 if (rowSplit.length < n) {
                     System.out.println("Sudoku has too many columns in one of the rows");
-                    return;
+                    return null;
                 }
 
                 // Copy the line to the array
@@ -70,15 +70,15 @@ public class SudokuSolver {
                 }
             }
             scanner.close();
-            solve(board);
+            return solve(board);
         } catch (FileNotFoundException e) {
             System.out.println("There was a problem opening the file.");
             e.printStackTrace();
-            return;
+            return null;
         }
     }
 
-    public void solve(int[][] board) {
+    public static long[] solve(int[][] board) {
         Board sudokuBoard = new Board(board);
 
         // Start the timer
@@ -108,18 +108,16 @@ public class SudokuSolver {
 
         if (!verifySolutions(singleThreadedSolutions, multiThreadedSolutions, board)) {
             System.out.println("Solution(s) not correct");
-            return;
+            return null;
         }
 
         long singleThreadedTime = endSingleThreaded - startSingleThreaded;
         long multiThreadedTime = endMultiThreaded - startMultiThreaded;
-        System.out.println("single-threaded: " + singleThreadedTime + " ms");
-        System.out.println("multi-threaded: " + multiThreadedTime + " ms");
-        System.out.println("improvement: " + (multiThreadedTime - singleThreadedTime) + " ms\n");
+        return new long[] {singleThreadedTime, multiThreadedTime};
     }
 
     // Helper function to make sure solutions are correct
-    private boolean verifySolutions(ArrayList<int[][]> singleThreadedSolutions, ArrayList<int[][]> multiThreadedSolutions, int[][] board) {
+    private static boolean verifySolutions(ArrayList<int[][]> singleThreadedSolutions, ArrayList<int[][]> multiThreadedSolutions, int[][] board) {
         // Make sure all single-threaded solutions are accurate
         for (int[][] solution : singleThreadedSolutions) {
             if (!SolutionChecker.check(board, solution)) return false;

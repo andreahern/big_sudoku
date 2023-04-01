@@ -4,22 +4,21 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class CompleteBoardGenerator {
     private int n, sqrtn;
     private int board[][];
     private int completed_board[][];
 
-    public SudokuBoard(int n) {
+    public CompleteBoardGenerator(int n) {
         this.n = n;
-        if ((int) Math.sqrt(n) != Math.sqrt(n)) return null;
         sqrtn = (int) Math.sqrt(n);
         board = new int[n][n];
+        generateBoard();
     }
 
-    public void generate_board() {
+    public void generateBoard() {
         ArrayList<Integer> options = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             options.add(i);
@@ -41,27 +40,27 @@ public class CompleteBoardGenerator {
             } else {
                 shift = sqrtn;
             }
-            board[i] = shift_row(board[i - 1], shift);
+            board[i] = shiftRow(board[i - 1], shift);
         }
 
         completed_board = board.clone();
     }
 
-    private int[] shift_row(int[] row, int n) {
+    private int[] shiftRow(int[] row, int shift) {
         int new_row[] = new int[n];
 
         for (int i = 0; i < n; i++) {
-            new_row[i] = row[n++ % n];
+            new_row[i] = row[shift++ % n];
         }
 
         return new_row;
     }
 
-    public int[][] get_board() {
+    public int[][] getBoard() {
         return board;
     }
 
-    public void print_board() {
+    public void printBoard() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 System.out.print((board[i][j] >= 10 ? board[i][j] : "0" + board[i][j]) + (j == n-1 ? "\n" : " "));

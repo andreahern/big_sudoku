@@ -4,99 +4,24 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-import java.io.*;
-import java.util.*;
-
 public class Board {
     public int n, sqrtn;
     public int[][] board, possible;
 
-    // Constructor given a file name
-    public Board(String filename) {
-        // Parse board from file
-        getBoard(filename);
-
-        // Prepare possibilities array
+    // Constructor given only board
+    public Board(int[][] board) {
+        n = board.length;
+        sqrtn = (int) Math.sqrt(n);
+        this.board = board;
         preparePossibilitiesArray();
     }
 
-    // Constructor given components
-    private Board(int n, int[][] board, int[][] possible) {
-        this.n = n;
-        this.sqrtn = (int) Math.sqrt(n);
+    // Constructor given board and possible
+    private Board(int[][] board, int[][] possible) {
+        n = board.length;
+        sqrtn = (int) Math.sqrt(n);
         this.board = board;
         this.possible = possible;
-    }
-
-    // Helper function to read in the sudoku board from a file
-    private int[][] getBoard(String fileName) {
-        try {
-            File file = new File(fileName);
-            Scanner scanner = new Scanner(file);
-
-            // Take in the first line to find out the side length of the board
-            String row = scanner.nextLine();
-            // If first row is empty, quit
-            if (row == null) {
-                System.out.println("File is empty");
-                return null;
-            }
-            String[] rowSplit = row.split(" ");
-            n = rowSplit.length;
-
-            // Quit if n is not a perfect square
-            if ((int) Math.sqrt(n) != Math.sqrt(n)) {
-                System.out.println("Sudoku board is invalid");
-                return null;
-            }
-            // Otherwise initialize sqrtn
-            sqrtn = (int) Math.sqrt(n);
-
-            // Initialize new board array
-            board = new int[n][n];
-
-            // Copy the first line to the array
-            for (int i = 0; i < n; i++) {
-                if (rowSplit[i].charAt(0) != '_') board[0][i] = Integer.parseInt(rowSplit[i]);
-                else board[0][i] = 0;
-            }
-
-            // Populate the rest of the array with data from the file
-            for (int i = 1; i < n; i++) {
-                row = scanner.nextLine();
-                // If row is empty, quit
-                if (row == null) {
-                    System.out.println("Sudoku has too few rows");
-                    return null;
-                }
-                rowSplit = row.split(" ");
-
-                // If column has too few columns, quit
-                if (rowSplit.length < n) {
-                    System.out.println("Sudoku has too few columns in one of the rows");
-                    return null;
-                }
-                // If column has too many columns, quit
-                if (rowSplit.length < n) {
-                    System.out.println("Sudoku has too many columns in one of the rows");
-                    return null;
-                }
-
-                // Copy the line to the array
-                for (int j = 0; j < n; j++) {
-                    if (rowSplit[j].charAt(0) != '_') board[i][j] = Integer.parseInt(rowSplit[j]);
-                    else board[i][j] = 0;
-                }
-            }
-            scanner.close();
-
-            return board;
-
-        } catch (FileNotFoundException e) {
-            System.out.println("There was a problem opening the file.");
-            e.printStackTrace();
-            return null;
-        }
     }
 
     // Helper function to fill the bitmask array with the numbers possible in each cell
@@ -146,6 +71,6 @@ public class Board {
             }
         }
 
-        return new Board(n, boardNow, possibleNow);
+        return new Board(boardNow, possibleNow);
     }
 }
