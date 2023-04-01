@@ -73,4 +73,27 @@ public class Board {
 
         return new Board(boardNow, possibleNow);
     }
+
+    // Helper function that makes a copy of the board with the given number in the given cell
+    public Board tryPlacement(int num, int at_i, int at_j) {
+        // Make a copy of the board
+        Board newBoard = this.copy();
+
+        // Put number in the cell in the new board array
+        newBoard.board[at_i][at_j] = num;
+
+        // Remove the number from the bitmasks in the row/column in the new possible array
+        for (int j = 0; j < board.n; j++) {
+            newBoard.possible[j][at_j] &= ~(1 << num);
+            newBoard.possible[at_i][j] &= ~(1 << num);
+        }
+        // Remove the number from the bitmasks in the square in the new possible array
+        for (int j = (at_i/board.sqrtn)*board.sqrtn; j < ((at_i/board.sqrtn) + 1)*board.sqrtn; j++) {
+            for (int k = (at_j/board.sqrtn)*board.sqrtn; k < ((at_j/board.sqrtn) + 1)*board.sqrtn; k++) {
+                newBoard.possible[j][k] &= ~(1 << num);
+            }
+        }
+
+        return newBoard;
+    }
 }
