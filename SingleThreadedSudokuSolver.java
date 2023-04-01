@@ -13,107 +13,60 @@ public class SingleThreadedSudokuSolver {
     private static ArrayList<int[][]> solutions;
 
     // Helper method to prepare the sudoku board and solve it
-    public static ArrayList<int[][]> solve(int[][] board) {
-        int n = board.length;
-
+    public static ArrayList<int[][]> solve(Board board) {
         // Initialize solutions ArrayList
         solutions = new ArrayList<>();
 
-        // Create an array of bitmasks to store the numbers allowed in each cell
-        int[][] allowed = new int[n][n];
-        // Fill with bitmasks of all 1s, initially assume all numbers are possible
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                allowed[i][j] = (1 << n+1) - 1;
-            }
-        }
-        // Populate bitmasks with actual numbers allowed in each cell
-        prepareBoard(n, board, allowed);
-
         // Solve the board
-        recursiveSolve(n, board, 0, allowed);
+        recursiveSolve(board, 0);
 
         return solutions;
     }
 
-    // Helper function to fill the bitmask array with the numbers allowed in each cell
-    private static void prepareBoard(int n, int[][] board, int[][] allowed) {
-        int sqrt = (int) Math.sqrt(n); // n is already guaranteed to be perfect square
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (board[i][j] != 0) { // If a cell is already populated
-                    // Fill in bitmasks in row/column to not include this number
-                    for (int k = 0; k < n; k++) {
-                        allowed[k][j] &= ~(1 << board[i][j]);
-                        allowed[i][k] &= ~(1 << board[i][j]);
-                    }
-                    // Fill in bitmasks in square to not include this number
-                    for (int k = (i/sqrt)*sqrt; k < ((i/sqrt) + 1)*sqrt; k++) {
-                        for (int l = (j/sqrt)*sqrt; l < ((j/sqrt) + 1)*sqrt; l++) {
-                            allowed[k][l] &= ~(1 << board[i][j]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     // Helper method to recursively solve the sudoku board using backtracking
-    private static void recursiveSolve(int n, int[][] board, int cell, int[][] allowed) {
-        // Extrapolate current i and j values from current cell number
-        int at_i = cell / n;
-        int at_j = cell % n;
+    private static void recursiveSolve(Board board, int cell) {
+        // Extrapolate current i and j values from current cell number (0-indexed)
+        // e.g. for a 3x3 board, cell numbers are:
+        //      0 1 2
+        //      3 4 5
+        //      6 7 8
+        int at_i = cell / board.n;
+        int at_j = cell % board.n;
 
         // If it's out of bounds, the board is solved so put the board in the solutions ArrayList and return
-        if (at_i >= n || at_j >= n) {
-            solutions.add(board);
+        if (at_i >= board.n || at_j >= board.n) {
+            solutions.add(board.board);
             return;
         }
 
-        // If nothing's allowed in this cell, no solution possible from this point so return
-        if (allowed[at_i][at_j] == 0) return;
+        // If nothing's possible in this cell, no solution possible from this point so return
+        if (board.possible[at_i][at_j] == 0) return;
         // If there's already something in this cell, just go to the next cell
-        if (board[at_i][at_j] != 0) recursiveSolve(n, board, cell + 1, allowed);
+        if (board.board[at_i][at_j] != 0) recursiveSolve(board, cell + 1);
 
         // Go through each possible number to go in this cell
-        for (int i = 1; i < n+1; i++) {
-            int sqrt = (int) Math.sqrt(n); // n is already guaranteed to be perfect square
-
-            if ((allowed[at_i][at_j] & (1 << i)) == (1 << i)) { // If the number is allowed in this cell
-                // Make a copy of the board array
-                int[][] boardNow = new int[n][n];
-                for (int j = 0; j < n; j++) {
-                    for (int k = 0; k < n; k++) {
-                        boardNow[j][k] = board[j][k];
-                    }
-                }
-
-                // Make a copy of the allowed array
-                int[][] allowedNow = new int[n][n];
-                for (int j = 0; j < n; j++) {
-                    for (int k = 0; k < n; k++) {
-                        allowedNow[j][k] = allowed[j][k];
-                    }
-                }
+        for (int i = 1; i < board.n + 1; i++) {
+            if ((board.possible[at_i][at_j] & (1 << i)) == (1 << i)) { // If the number is possible in this cell
+                // Make a copy of the board
+                Board newBoard = board.copy();
 
                 // Put number in the cell in the new board array
-                boardNow[at_i][at_j] = i;
+                newBoard.board[at_i][at_j] = i;
 
-                // Remove the number from the bitmasks in the row/column in the new allowed array
-                for (int j = 0; j < n; j++) {
-                    allowedNow[j][at_j] &= ~(1 << i);
-                    allowedNow[at_i][j] &= ~(1 << i);
+                // Remove the number from the bitmasks in the row/column in the new possible array
+                for (int j = 0; j < board.n; j++) {
+                    newBoard.possible[j][at_j] &= ~(1 << i);
+                    newBoard.possible[at_i][j] &= ~(1 << i);
                 }
-                // Remove the number from the bitmasks in the square in the new allowed array
-                for (int j = (at_i/sqrt)*sqrt; j < ((at_i/sqrt) + 1)*sqrt; j++) {
-                    for (int k = (at_j/sqrt)*sqrt; k < ((at_j/sqrt) + 1)*sqrt; k++) {
-                        allowedNow[j][k] &= ~(1 << i);
+                // Remove the number from the bitmasks in the square in the new possible array
+                for (int j = (at_i/board.sqrtn)*board.sqrtn; j < ((at_i/board.sqrtn) + 1)*board.sqrtn; j++) {
+                    for (int k = (at_j/board.sqrtn)*board.sqrtn; k < ((at_j/board.sqrtn) + 1)*board.sqrtn; k++) {
+                        newBoard.possible[j][k] &= ~(1 << i);
                     }
                 }
 
                 // Recurse from here
-                recursiveSolve(n, boardNow, cell++, allowedNow);
+                recursiveSolve(newBoard, cell + 1);
             }
         }
     }
