@@ -1,7 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// Multi-threaded program that finds all solutions to a sudoku board using a forking
-// backtracking method.
+// Multi-threaded program that finds all solutions to a sudoku board using a task queue.
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,18 +14,18 @@ public class MultiThreadedBFS {
     private static SolutionList solutions;
 
     // List of threads
-    private static SudokuThread[] threads;
+    private static SudokuThreadBFS[] threads;
 
-    // Helper method to prepare the sudoku board and solve it
+    // Main method to call to solve the board
     public static ArrayList<int[][]> solve(Board board) {
         // Initialize solutions list
         solutions = new SolutionList();
 
         // Initialize threads
         TaskQueue queue = new TaskQueue();
-        threads = new SudokuThread[numThreads];
+        threads = new SudokuThreadBFS[numThreads];
         for (int i = 0; i < numThreads; i++) {
-            threads[i] = new SudokuThread(queue, solutions);
+            threads[i] = new SudokuThreadBFS(queue, solutions);
         }
 
         queue.startWorking();

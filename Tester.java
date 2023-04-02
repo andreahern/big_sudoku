@@ -22,9 +22,10 @@ public class Tester {
         // Keep track of times for each approach
         long singleThreadedDFSTime = 0;
         long singleThreadedBFSTime = 0;
+        long multiThreadedDFSTime = 0;
         long multiThreadedBFSTime = 0;
 
-        System.out.println("\tSingle-threaded DFS\tSingle-threaded BFS\tMulti-threaded BFS");
+        System.out.println("\tSingle-threaded DFS\tSingle-threaded BFS\tMulti-threaded DFS\tMulti-threaded BFS");
         // Generate and solve numBoards boards
         for (int i = 0; i < numBoards; i++) {
             // Generate a new complete valid board
@@ -44,18 +45,21 @@ public class Tester {
             // Update total time taken
             singleThreadedDFSTime += ans[0];
             singleThreadedBFSTime += ans[1];
+            multiThreadedDFSTime += ans[2];
             multiThreadedBFSTime += ans[2];
 
-            System.out.println("\t" + ans[0] + " ms\t\t\t" + ans[1] + " ms\t\t\t" + ans[2] + " ms");
+            System.out.println("\t" + ans[0] + " ms\t\t\t" + ans[1] + " ms\t\t\t" + ans[2] + " ms\t\t\t" + ans[3] + " ms");
         }
 
         // Find average time taken for each approach
         double singleThreadedDFSAvg = (double)singleThreadedDFSTime/numBoards;
         double singleThreadedBFSAvg = (double)singleThreadedBFSTime/numBoards;
+        double multiThreadedDFSAvg = (double)multiThreadedDFSTime/numBoards;
         double multiThreadedBFSAvg = (double)multiThreadedBFSTime/numBoards;
 
-        System.out.println("\t----------------------------------------");
-        System.out.println("avg\t" + singleThreadedDFSAvg + "ms\t\t\t" + singleThreadedBFSAvg + " ms\t\t\t" + multiThreadedBFSAvg + " ms");
-        System.out.println("BFS avg improvement: " + (singleThreadedBFSAvg - multiThreadedBFSAvg) + "ms\n");
+        System.out.println("\t------------------------------------------------------------------------------------------------");
+        System.out.println("avg\t" + singleThreadedDFSAvg + "ms\t\t\t" + singleThreadedBFSAvg + " ms\t\t\t" + multiThreadedDFSAvg + " ms\t\t\t" + multiThreadedBFSAvg + " ms\n");
+        System.out.println("BFS avg improvement: " + (singleThreadedBFSAvg - multiThreadedBFSAvg) + " ms");
+        System.out.println("DFS avg improvement: " + (singleThreadedDFSAvg - multiThreadedDFSAvg) + " ms\n");
     }
 }

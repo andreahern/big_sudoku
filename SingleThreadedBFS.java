@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.*;
 
 public class SingleThreadedBFS {
-    // Helper method to prepare the sudoku board and solve it
+    // Main method to call to solve the board
     public static ArrayList<int[][]> solve(Board board) {
         // Array list to store solution(s)
         ArrayList<int[][]> solutions = new ArrayList<>();

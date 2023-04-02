@@ -1,30 +1,35 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// Single-threaded program that finds all solutions to a sudoku board using a recursive
-// backtracking method.
+// Thread class that handles each thread for DFS implementation.
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-import java.io.*;
 import java.util.*;
 
-public class SingleThreadedDFS {
-    // Array list to store solution(s)
-    private static ArrayList<int[][]> solutions;
+public class SudokuThreadDFS extends Thread {
+    private SolutionList solutions;
+    private ArrayList<Task> tasks;
 
-    // Main method to call to solve the board
-    public static ArrayList<int[][]> solve(Board board) {
-        // Initialize solutions ArrayList
-        solutions = new ArrayList<>();
+    // Constructor
+    public SudokuThreadDFS(SolutionList solutions) {
+        this.solutions = solutions;
+        tasks = new ArrayList<Task>();
+    }
 
-        // Solve the board
-        recursiveSolve(board, 0);
+    @Override
+    public void run() {
+        for (Task task: tasks) {
+            // Run single-threaded DFS on each task
+            recursiveSolve(task.getBoard(), task.getCell());
+        }
+    }
 
-        return solutions;
+    public void giveNewTask(Task task) {
+        tasks.add(task);
     }
 
     // Helper method to recursively solve the sudoku board using backtracking
-    private static void recursiveSolve(Board board, int cell) {
+    private void recursiveSolve(Board board, int cell) {
         // Extrapolate current i and j values from current cell number (0-indexed)
         // e.g. for a 3x3 board, cell numbers are:
         //      0 1 2
@@ -35,7 +40,7 @@ public class SingleThreadedDFS {
 
         // If it's out of bounds, the board is solved so put the board in the solutions ArrayList and return
         if (at_i >= board.n || at_j >= board.n) {
-            solutions.add(board.board);
+            solutions.addSolution(board.board);
             return;
         }
 

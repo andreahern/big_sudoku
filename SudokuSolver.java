@@ -96,6 +96,13 @@ public class SudokuSolver {
         long endSingleThreadedBFS = System.currentTimeMillis();
 
         // Start the timer
+        long startMultiThreadedDFS = System.currentTimeMillis();
+        // Solve the board using the multi-threaded DFS solver
+        ArrayList<int[][]> multiThreadedDFSSolutions = MultiThreadedDFS.solve(sudokuBoard);
+        // End the timer
+        long endMultiThreadedDFS = System.currentTimeMillis();
+
+        // Start the timer
         long startMultiThreadedBFS = System.currentTimeMillis();
         // Solve the board using the multi-threaded BFS solver
         ArrayList<int[][]> multiThreadedBFSSolutions = MultiThreadedBFS.solve(sudokuBoard);
@@ -117,6 +124,7 @@ public class SudokuSolver {
         // Sort the solution lists
         Collections.sort(singleThreadedDFSSolutions, sort2DArrays);
         Collections.sort(singleThreadedBFSSolutions, sort2DArrays);
+        Collections.sort(multiThreadedDFSSolutions, sort2DArrays);
         Collections.sort(multiThreadedBFSSolutions, sort2DArrays);
 
         // Verify all solution lists with each other
@@ -128,11 +136,16 @@ public class SudokuSolver {
             System.out.println("Solution(s) not correct");
             return null;
         }
+        if (!verifySolutions(singleThreadedDFSSolutions, multiThreadedDFSSolutions, board)) {
+            System.out.println("Solution(s) not correct");
+            return null;
+        }
 
         long singleThreadedDFSTime = endSingleThreadedDFS - startSingleThreadedDFS;
         long singleThreadedBFSTime = endSingleThreadedBFS - startSingleThreadedBFS;
+        long multiThreadedDFSTime = endMultiThreadedDFS - startMultiThreadedDFS;
         long multiThreadedBFSTime = endMultiThreadedBFS - startMultiThreadedBFS;
-        return new long[] {singleThreadedDFSTime, singleThreadedBFSTime, multiThreadedBFSTime};
+        return new long[] {singleThreadedDFSTime, singleThreadedBFSTime, multiThreadedDFSTime, multiThreadedBFSTime};
     }
 
     // Helper function to make sure solutions are correct
