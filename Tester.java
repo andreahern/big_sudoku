@@ -38,7 +38,7 @@ public class Tester {
             singleThreadedDFSTime += ans[0];
             singleThreadedBFSTime += ans[1];
             multiThreadedDFSTime += ans[2];
-            multiThreadedBFSTime += ans[2];
+            multiThreadedBFSTime += ans[3];
 
             System.out.printf("\t%-25s %-25s %-25s %-25s\n", ans[0] + " ms", ans[1] + " ms", ans[2] + " ms", ans[3] + " ms");
         }
