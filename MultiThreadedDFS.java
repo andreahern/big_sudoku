@@ -32,7 +32,11 @@ public class MultiThreadedDFS {
             if (start_j >= board.n) {
                 start_j = 0;
                 start_i++;
-                if (start_i >= board.n) return solutions.getSolutions();
+                if (start_i >= board.n) {
+                    // If there are no empty cells, the board is already solved so just put it in the solutions list and return
+                    solutions.addSolution(board.board);
+                    return solutions.getSolutions();
+                }
             }
         }
 

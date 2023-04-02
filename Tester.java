@@ -17,7 +17,7 @@ public class Tester {
         double difficulty = Double.parseDouble(args[2]);
 
         // Create a new board generator
-        CompleteBoardGenerator generator = new CompleteBoardGenerator(n);
+        SudokuPuzzleGenerator generator = new SudokuPuzzleGenerator(n, difficulty);
 
         // Keep track of times for each approach
         long singleThreadedDFSTime = 0;
@@ -28,16 +28,8 @@ public class Tester {
         System.out.printf("\n\t%-25s %-25s %-25s %-25s\n\n", "Single-threaded DFS", "Single-threaded BFS", "Multi-threaded DFS", "Multi-threaded BFS");
         // Generate and solve numBoards boards
         for (int i = 0; i < numBoards; i++) {
-            // Generate a new complete valid board
-            generator.generateBoard();
-            int[][] newBoard = generator.getBoard();
-
-            // Randomly clear some of the cells to create a valid sudoku puzzle
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) {
-                    if (Math.random() < difficulty) newBoard[j][k] = 0;
-                }
-            }
+            // Generate a new puzzle
+            int[][] newBoard = generator.generatePuzzle();
 
             // Solve the board
             long[] ans = SudokuSolver.solve(newBoard);
