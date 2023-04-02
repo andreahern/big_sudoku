@@ -82,31 +82,57 @@ public class SudokuSolver {
         Board sudokuBoard = new Board(board);
 
         // Start the timer
-        long startSingleThreaded = System.currentTimeMillis();
-
-        // Solve the board using the single-threaded solver
-        ArrayList<int[][]> singleThreadedSolutions = SingleThreadedSudokuSolver.solve(sudokuBoard);
-
+        long startSingleThreadedDFS = System.currentTimeMillis();
+        // Solve the board using the single-threaded DFS solver
+        ArrayList<int[][]> singleThreadedDFSSolutions = SingleThreadedDFS.solve(sudokuBoard);
         // End the timer
-        long endSingleThreaded = System.currentTimeMillis();
+        long endSingleThreadedDFS = System.currentTimeMillis();
 
         // Start the timer
-        long startMultiThreaded = System.currentTimeMillis();
-
-        // Solve the board using the multi-threaded solver
-        ArrayList<int[][]> multiThreadedSolutions = MultiThreadedSudokuSolver.solve(sudokuBoard);
-
+        long startSingleThreadedBFS = System.currentTimeMillis();
+        // Solve the board using the single-threaded BFS solver
+        ArrayList<int[][]> singleThreadedBFSSolutions = SingleThreadedDFS.solve(sudokuBoard);
         // End the timer
-        long endMultiThreaded = System.currentTimeMillis();
+        long endSingleThreadedBFS = System.currentTimeMillis();
 
-        if (!verifySolutions(singleThreadedSolutions, multiThreadedSolutions, board)) {
+        // Start the timer
+        long startMultiThreadedBFS = System.currentTimeMillis();
+        // Solve the board using the multi-threaded BFS solver
+        ArrayList<int[][]> multiThreadedBFSSolutions = MultiThreadedBFS.solve(sudokuBoard);
+        // End the timer
+        long endMultiThreadedBFS = System.currentTimeMillis();
+
+        // Make comparator to sort solutions
+        Comparator<int[][]> sort2DArrays = new java.util.Comparator<int[][]>() {
+            public int compare(int[][] a, int[][] b) {
+                for (int i = 0; i < a.length; i++) {
+                    for (int j = 0; j < a[0].length; j++) {
+                        if (a[i][j] != b[i][j]) return Integer.compare(a[i][j], b[i][j]);
+                    }
+                }
+                return 0;
+            }
+        };
+
+        // Sort the solution lists
+        Collections.sort(singleThreadedDFSSolutions, sort2DArrays);
+        Collections.sort(singleThreadedBFSSolutions, sort2DArrays);
+        Collections.sort(multiThreadedBFSSolutions, sort2DArrays);
+
+        // Verify all solution lists with each other
+        if (!verifySolutions(singleThreadedDFSSolutions, singleThreadedBFSSolutions, board)) {
+            System.out.println("Solution(s) not correct");
+            return null;
+        }
+        if (!verifySolutions(singleThreadedDFSSolutions, multiThreadedBFSSolutions, board)) {
             System.out.println("Solution(s) not correct");
             return null;
         }
 
-        long singleThreadedTime = endSingleThreaded - startSingleThreaded;
-        long multiThreadedTime = endMultiThreaded - startMultiThreaded;
-        return new long[] {singleThreadedTime, multiThreadedTime};
+        long singleThreadedDFSTime = endSingleThreadedDFS - startSingleThreadedDFS;
+        long singleThreadedBFSTime = endSingleThreadedBFS - startSingleThreadedBFS;
+        long multiThreadedBFSTime = endMultiThreadedBFS - startMultiThreadedBFS;
+        return new long[] {singleThreadedDFSTime, singleThreadedBFSTime, multiThreadedBFSTime};
     }
 
     // Helper function to make sure solutions are correct
@@ -121,28 +147,6 @@ public class SudokuSolver {
 
         // If there are no solutions return true
         if (singleThreadedSolutions.size() == 0) return true;
-
-        // Sort the solution lists
-        Collections.sort(singleThreadedSolutions, new java.util.Comparator<int[][]>() {
-            public int compare(int[][] a, int[][] b) {
-                for (int i = 0; i < a.length; i++) {
-                    for (int j = 0; j < a[0].length; j++) {
-                        if (a[i][j] != b[i][j]) return Integer.compare(a[i][j], b[i][j]);
-                    }
-                }
-                return 0;
-            }
-        });
-        Collections.sort(multiThreadedSolutions, new java.util.Comparator<int[][]>() {
-            public int compare(int[][] a, int[][] b) {
-                for (int i = 0; i < a.length; i++) {
-                    for (int j = 0; j < a[0].length; j++) {
-                        if (a[i][j] != b[i][j]) return Integer.compare(a[i][j], b[i][j]);
-                    }
-                }
-                return 0;
-            }
-        });
 
         // Make sure both approaches found the same solutions
         for (int i = 0; i < singleThreadedSolutions.size(); i++) {
