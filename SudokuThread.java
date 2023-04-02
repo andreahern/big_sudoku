@@ -16,9 +16,9 @@ public class SudokuThread extends Thread {
     }
 
     private void waitForTask() {
-        System.out.println("waitForTask()");
+        //System.out.println("waitForTask()");
         while (curTask == null) {
-            System.out.println("((start of loop))");
+            //System.out.println("((start of loop))");
             // Try to get new task, if failed go back to sleep
             curTask = queue.getTask();
             if (curTask == null) return;
@@ -27,9 +27,9 @@ public class SudokuThread extends Thread {
     }
 
     private void doTask() {
-        System.out.println("doTask()");
+        //System.out.println("doTask()");
         queue.startWorking();
-        System.out.println("started working, " + queue.getNumThreadsWorking());
+        //System.out.println("started working, " + queue.getNumThreadsWorking());
         Board board = curTask.getBoard();
         int cell = curTask.getCell();
 
@@ -46,7 +46,7 @@ public class SudokuThread extends Thread {
             solutions.addSolution(board.board);
             curTask = null;
             queue.stopWorking();
-            System.out.println("stopped working, " + queue.getNumThreadsWorking());
+            //System.out.println("stopped working, " + queue.getNumThreadsWorking());
             return;
         }
 
@@ -54,7 +54,7 @@ public class SudokuThread extends Thread {
         if (board.possible[at_i][at_j] == 0) {
             curTask = null;
             queue.stopWorking();
-            System.out.println("stopped working, " + queue.getNumThreadsWorking());
+            //System.out.println("stopped working, " + queue.getNumThreadsWorking());
             return;
         }
         // If there's already something in this cell, just go to the next cell
@@ -62,7 +62,7 @@ public class SudokuThread extends Thread {
             queue.addTask(new Task(board, cell + 1));
             curTask = null;
             queue.stopWorking();
-            System.out.println("stopped working, " + queue.getNumThreadsWorking());
+            //System.out.println("stopped working, " + queue.getNumThreadsWorking());
             return;
         }
 
@@ -74,16 +74,12 @@ public class SudokuThread extends Thread {
 
                 // Recurse from here
                 queue.addTask(new Task(newBoard, cell + 1));
-                curTask = null;
-                queue.stopWorking();
-                System.out.println("stopped working, " + queue.getNumThreadsWorking());
-                return;
             }
         }
 
         curTask = null;
         queue.stopWorking();
-        System.out.println("stopped working, " + queue.getNumThreadsWorking());
+        //System.out.println("stopped working, " + queue.getNumThreadsWorking());
         return;
     }
 }

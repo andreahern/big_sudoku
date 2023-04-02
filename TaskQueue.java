@@ -17,15 +17,16 @@ public class TaskQueue {
     }
 
     public synchronized void addTask(Task task) {
-        System.out.println("addTask()");
         queue.add(task);
         notifyAll();
     }
 
     public synchronized Task getTask() {
-        System.out.println("getTask()");
         while (queue.size() == 0) {
-            if (numThreadsWorking == 0) return null;
+            if (numThreadsWorking == 0) {
+                notifyAll();
+                return null;
+            }
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -33,13 +34,13 @@ public class TaskQueue {
                 e.printStackTrace();
             }
         }
-        
+        if (queue.size() == 0) return null;
+
         return queue.poll();
     }
 
     public synchronized void startWorking() {
         numThreadsWorking++;
-        notifyAll();
     }
 
     public synchronized void stopWorking() {

@@ -29,6 +29,7 @@ public class MultiThreadedSudokuSolver {
             threads[i] = new SudokuThread(queue, solutions);
         }
 
+        queue.startWorking();
         // Start all threads
         for (int i = 0; i < numThreads; i++) {
             threads[i].start();
@@ -36,6 +37,7 @@ public class MultiThreadedSudokuSolver {
 
         // Put first task in queue
         queue.addTask(new Task(board, 0));
+        queue.stopWorking();
 
         // Join all threads
         for (int i = 0; i < numThreads; i++) {

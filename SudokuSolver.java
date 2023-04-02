@@ -99,8 +99,6 @@ public class SudokuSolver {
         // End the timer
         long endMultiThreaded = System.currentTimeMillis();
 
-
-        System.out.println(singleThreadedSolutions.size() + " " + multiThreadedSolutions.size());
         if (!verifySolutions(singleThreadedSolutions, multiThreadedSolutions, board)) {
             System.out.println("Solution(s) not correct");
             return null;
