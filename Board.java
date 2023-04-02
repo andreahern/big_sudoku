@@ -83,13 +83,13 @@ public class Board {
         newBoard.board[at_i][at_j] = num;
 
         // Remove the number from the bitmasks in the row/column in the new possible array
-        for (int j = 0; j < board.n; j++) {
+        for (int j = 0; j < n; j++) {
             newBoard.possible[j][at_j] &= ~(1 << num);
             newBoard.possible[at_i][j] &= ~(1 << num);
         }
         // Remove the number from the bitmasks in the square in the new possible array
-        for (int j = (at_i/board.sqrtn)*board.sqrtn; j < ((at_i/board.sqrtn) + 1)*board.sqrtn; j++) {
-            for (int k = (at_j/board.sqrtn)*board.sqrtn; k < ((at_j/board.sqrtn) + 1)*board.sqrtn; k++) {
+        for (int j = (at_i/sqrtn)*sqrtn; j < ((at_i/sqrtn) + 1)*sqrtn; j++) {
+            for (int k = (at_j/sqrtn)*sqrtn; k < ((at_j/sqrtn) + 1)*sqrtn; k++) {
                 newBoard.possible[j][k] &= ~(1 << num);
             }
         }

@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.*;
 
 public class SingleThreadedSudokuSolver {
-    // Array to store solution(s)
+    // Array list to store solution(s)
     private static ArrayList<int[][]> solutions;
 
     // Helper method to prepare the sudoku board and solve it
@@ -48,7 +48,7 @@ public class SingleThreadedSudokuSolver {
         for (int i = 1; i < board.n + 1; i++) {
             if ((board.possible[at_i][at_j] & (1 << i)) == (1 << i)) { // If the number is possible in this cell
                 // Place it in the cell
-                tryPlacement(i, at_i, at_j);
+                Board newBoard = board.tryPlacement(i, at_i, at_j);
 
                 // Recurse from here
                 recursiveSolve(newBoard, cell + 1);

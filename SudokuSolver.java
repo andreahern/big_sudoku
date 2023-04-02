@@ -90,7 +90,6 @@ public class SudokuSolver {
         // End the timer
         long endSingleThreaded = System.currentTimeMillis();
 
-        /* UNCOMMENT ONCE MULTI-THREADED IS IMPLEMENTED
         // Start the timer
         long startMultiThreaded = System.currentTimeMillis();
 
@@ -99,13 +98,9 @@ public class SudokuSolver {
 
         // End the timer
         long endMultiThreaded = System.currentTimeMillis();
-        */
 
-        // DELETE ONCE MULTI-THREADED IS IMPLEMENTED
-        ArrayList<int[][]> multiThreadedSolutions = singleThreadedSolutions;
-        long startMultiThreaded = startSingleThreaded;
-        long endMultiThreaded = endSingleThreaded;
 
+        System.out.println(singleThreadedSolutions.size() + " " + multiThreadedSolutions.size());
         if (!verifySolutions(singleThreadedSolutions, multiThreadedSolutions, board)) {
             System.out.println("Solution(s) not correct");
             return null;

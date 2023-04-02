@@ -11,8 +11,10 @@ public class Tester {
     public static void main(String[] args) {
         // args[0]: number of boards to generate
         // args[1]: size length of the boards
+        // args[2]: difficulty (between 0.0 and 1.0)
         int numBoards = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
+        double difficulty = Double.parseDouble(args[2]);
 
         // Create a new board generator
         CompleteBoardGenerator generator = new CompleteBoardGenerator(n);
@@ -31,7 +33,7 @@ public class Tester {
             // Randomly clear some of the cells to create a valid sudoku puzzle
             for (int j = 0; j < n; j++) {
                 for (int k = 0; k < n; k++) {
-                    if (Math.random() < 0.33) newBoard[j][k] = 0;
+                    if (Math.random() < difficulty) newBoard[j][k] = 0;
                 }
             }
 
@@ -51,6 +53,6 @@ public class Tester {
 
         System.out.println("\t----------------------------------------");
         System.out.println("avg\t" + singleThreadedAvg + "ms\t\t\t" + multiThreadedAvg + " ms");
-        System.out.println("avg improvement: " + (multiThreadedAvg - singleThreadedAvg) + "ms\n");
+        System.out.println("avg improvement: " + (singleThreadedAvg - multiThreadedAvg) + "ms\n");
     }
 }
