@@ -71,7 +71,7 @@ public class SudokuThreadBFS extends Thread {
                 // Place it in the cell
                 Board newBoard = board.tryPlacement(i, at_i, at_j);
 
-                // Recurse from here
+                // Add the task to the queue
                 queue.addTask(new Task(newBoard, cell + 1));
             }
         }
